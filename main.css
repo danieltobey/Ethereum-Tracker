@@ -2,7 +2,7 @@ body {
 	background-color: black;
 	font-family: sans-serif;
 	color: white;
-	text-align: center;
+	/*text-align: center;*/
 }
 
 #ethPrice {
@@ -10,13 +10,14 @@ body {
 }
 
 #lastUpdated {
-	font-size: 6em;
+	font-size: 2em;
+	margin-bottom: 1em;
 }
 
 .volume {
-	font-size: 2em;
+	font-size: 3em;
 	margin: auto;
-	width: 50%;
+	margin-left: 0;
 }
 .volume * {
 	display: inline-block;
@@ -41,6 +42,7 @@ body {
 	width: 50%;
 	text-align: left;
 	font-family: monospace;
+	font-size: 1.5em;
 }
 
 .volumeBigChange {

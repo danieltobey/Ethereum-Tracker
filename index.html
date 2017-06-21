@@ -39,7 +39,9 @@ function GetEthPriceReturn(data)
 	$('#lastUpdated').text('Last updated: ' + CurrentTime());
 }
 
-var numbing;
+// If the market is fluctuating wildly, start getting "numb" to fluctuations.
+// Numbing is the multiplier (or divisor) for how big a fluctuation needs to be to warn the user.
+var numbing = 1;
 // Display the current and last volumes
 function GetEthVolumeReturn(data)
 {
@@ -55,14 +57,21 @@ function GetEthVolumeReturn(data)
 	$('#currVol').text(currVol);
 	$('#lastVol').text(lastVol);
 
-	var percChange = (currVol / lastVol) * 100;
+	var percChange = ((currVol - lastVol) / lastVol) * 100;
 	$('#percChange').text(percChange.toFixed(0) + '%');
 
 	// If the price changes by more than 50%, alert the room!
-	if (Math.abs(percChange) > 100 || Math.abs(percChange) < 50)
+	if (Math.abs(percChange) > (100 * numbing))
+	{
 		$("#volumeMinute").addClass('volumeBigChange');
+		numbing++;
+	}
 	else
+	{
 		$("#volumeMinute").removeClass('volumeBigChange');
+		if (numbing > 1)
+			numbing--;
+	}
 }
 
 // Download the current price
@@ -86,23 +95,20 @@ function GetEthVolume()
 // Call once to initialize data...
 GetEthPrice();
 GetEthVolume();
-// ... then call once every 30 seconds
-var interval = 2000;
-setInterval(GetEthPrice, interval);
-setInterval(GetEthVolume, interval);
+// ... then call once every few seconds
+setInterval(GetEthPrice, 30000);
+setInterval(GetEthVolume, 60000);
 </script>
 
 <body>
 
-<!-- Last updated -->
-<div id='lastUpdated'>Last updated: never</div>
 <!-- Current price -->
 <div id='ethPrice'>No data</div>
+<!-- Last updated -->
+<div id='lastUpdated'>Last updated: never</div>
 
 <div class='volume'>
-	<h2>Volumes</h2>
 	<div class='volumeSub' id = "volumeMinute">
-		<h3>5 Minutes</h3>
 		<!-- Current volume -->
 		<div class='volLSide'>0-5 minute volume:&nbsp</div><div class='volRSide' id='currVol'>No data</div>
 		<!-- Last volume -->
