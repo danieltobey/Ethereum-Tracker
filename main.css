@@ -1,0 +1,14 @@
+body {
+	background-color: black;
+	font-family: sans-serif;
+	color: white;
+	text-align: center;
+}
+
+#ethPrice {
+	font-size: 20em;
+}
+
+#lastUpdated {
+	font-size: 6em;
+}

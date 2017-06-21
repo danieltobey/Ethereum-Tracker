@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<link rel="stylesheet" href="main.css">
+</head>
+
+<script>
+
+console.log('Hello world!');
+
+function GetEthPriceReturn(data)
+{
+	// Show ethereum price
+	$('#ethPrice').text('$'+data.USD.toFixed(2));
+
+	// Current time
+	var currentDate = new Date();
+	// Make it pretty
+	var amPm = ' am'
+	var hour = currentDate.getHours();
+	if (hour > 12)
+	{
+		hour -= 12;
+		amPm = ' pm';
+	}
+	var min = currentDate.getMinutes();
+	if (min < 10)
+		min = '0' + min;
+	var sec = currentDate.getSeconds();
+	if (sec < 10)
+		sec = '0' + sec;
+	var time = 'Last updated: ' + hour + ':' + min + ':' + sec + amPm;
+	$('#lastUpdated').text(time);
+}
+
+function GetEthPrice()
+{
+	jQuery.get('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD',
+		null,
+		function(data) { GetEthPriceReturn(data); },
+		null);
+}
+
+GetEthPrice();
+setInterval(GetEthPrice, 10000);
+</script>
+
+<body>
+
+<div id='lastUpdated'>Last updated: never</div>
+<div id='ethPrice'>No data</div>
+
+</body>
+
+</html>
