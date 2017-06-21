@@ -7,12 +7,9 @@
 </head>
 
 <script>
-// Display the current price and time it was received
-function GetEthPriceReturn(data)
-{
-	// Show ethereum price
-	$('#ethPrice').text('$'+data.USD.toFixed(2));
 
+function CurrentTime()
+{
 	// Current time
 	var currentDate = new Date();
 	// Make it pretty
@@ -29,8 +26,47 @@ function GetEthPriceReturn(data)
 	var sec = currentDate.getSeconds();
 	if (sec < 10)
 		sec = '0' + sec;
-	var time = 'Last updated: ' + hour + ':' + min + ':' + sec + amPm;
-	$('#lastUpdated').text(time);
+
+	return hour + ':' + min + ':' + sec + amPm;
+}
+
+// Display the current price and time it was received
+function GetEthPriceReturn(data)
+{
+	// Show ethereum price
+	$('#ethPrice').text('$'+data.USD.toFixed(2));
+
+	$('#lastUpdated').text('Last updated: ' + CurrentTime());
+}
+
+// Display the current and last volumes
+var lastVol = -1;
+var lastTime = CurrentTime();
+function GetEthVolumeReturn(data)
+{
+	var currVol = data.Data[0].volumefrom;
+
+	$('#currVol').text(currVol + ' (' + CurrentTime() + ')');
+
+	if (lastVol === -1)
+	{
+		lastVol = currVol;
+		lastTime = CurrentTime();
+		$('#lastVol').text(lastVol + ' (' + lastTime + ')');
+	}
+	else if (lastVol != currVol)
+	{
+		$('#lastVol').text(lastVol + ' (' + lastTime + ')');
+
+		// If the price changes by more than 50%, alert the room!
+		if (Math.abs(lastVol - currVol) > Math.abs(0.5 * lastVol))
+			$("#volumeMinute").addClass('volumeBigChange');
+		else
+			$("#volumeMinute").removeClass('volumeBigChange');
+
+		lastVol = currVol;
+		lastTime = CurrentTime();
+	}
 }
 
 // Download the current price
@@ -42,18 +78,45 @@ function GetEthPrice()
 		null);
 }
 
+// Download the current volume of trades
+function GetEthVolume()
+{
+	jQuery.get('https://min-api.cryptocompare.com/data/histominute?fsym=ETH&tsym=USD&limit=1&e=CCCAGG',
+		null,
+		function(data) { GetEthVolumeReturn(data); },
+		null);
+}
+
 // Call once to initialize data...
 GetEthPrice();
+GetEthVolume();
 // ... then call once every 30 seconds
-setInterval(GetEthPrice, 30000);
+var interval = 2000;
+setInterval(GetEthPrice, interval);
+setInterval(GetEthVolume, interval);
 </script>
 
 <body>
 
 <!-- Last updated -->
 <div id='lastUpdated'>Last updated: never</div>
-<!-- Current price  -->
+<!-- Current price -->
 <div id='ethPrice'>No data</div>
+
+<div class='volume'>
+	<h2>Volumes</h2>
+	<div class='volumeSub' id = "volumeMinute">
+		<h3>Minute</h3>
+		<!-- Current volume -->
+		<div class='volLSide'>Current volume:&nbsp</div><div class='volRSide' id='currVol'>No data</div>
+		<!-- Last volume -->
+		<br>
+		<div class='volLSide'>Last volume:&nbsp</div><div class='volRSide' id='lastVol'>No data</div>
+	</div>
+</div>
+
+<script>
+</script>
 
 </body>
 

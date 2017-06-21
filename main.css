@@ -12,3 +12,36 @@ body {
 #lastUpdated {
 	font-size: 6em;
 }
+
+.volume {
+	font-size: 2em;
+	margin: auto;
+	width: 50%;
+}
+.volume * {
+	display: inline-block;
+	margin: auto;
+}
+.volume .volumeSub {
+	width: 100%;
+	margin: 0px;
+}
+.volume h2 {
+	width: 100%;
+}
+.volume h3 {
+	width: 100%;
+	margin-top: 0.5em;
+}
+.volLSide {
+	width: 50%;
+	text-align: right;
+}
+.volRSide {
+	width: 50%;
+	text-align: left;
+}
+
+.volumeBigChange {
+	background-color: red;
+}
