@@ -39,34 +39,30 @@ function GetEthPriceReturn(data)
 	$('#lastUpdated').text('Last updated: ' + CurrentTime());
 }
 
+var numbing;
 // Display the current and last volumes
-var lastVol = -1;
-var lastTime = CurrentTime();
 function GetEthVolumeReturn(data)
 {
-	var currVol = data.Data[0].volumefrom;
+	var currVol = 0;
+	var lastVol = 0;
+	for (var i = 0; i < 5; i++)
+		currVol += data.Data[i].volumefrom;
+	for (var i = 5; i < 10; i++)
+		lastVol += data.Data[i].volumefrom;
 
-	$('#currVol').text(currVol + ' (' + CurrentTime() + ')');
+	currVol = currVol.toFixed(0);
+	lastVol = lastVol.toFixed(0);
+	$('#currVol').text(currVol);
+	$('#lastVol').text(lastVol);
 
-	if (lastVol === -1)
-	{
-		lastVol = currVol;
-		lastTime = CurrentTime();
-		$('#lastVol').text(lastVol + ' (' + lastTime + ')');
-	}
-	else if (lastVol != currVol)
-	{
-		$('#lastVol').text(lastVol + ' (' + lastTime + ')');
+	var percChange = (currVol / lastVol) * 100;
+	$('#percChange').text(percChange.toFixed(0) + '%');
 
-		// If the price changes by more than 50%, alert the room!
-		if (Math.abs(lastVol - currVol) > Math.abs(0.5 * lastVol))
-			$("#volumeMinute").addClass('volumeBigChange');
-		else
-			$("#volumeMinute").removeClass('volumeBigChange');
-
-		lastVol = currVol;
-		lastTime = CurrentTime();
-	}
+	// If the price changes by more than 50%, alert the room!
+	if (Math.abs(percChange) > 100 || Math.abs(percChange) < 50)
+		$("#volumeMinute").addClass('volumeBigChange');
+	else
+		$("#volumeMinute").removeClass('volumeBigChange');
 }
 
 // Download the current price
@@ -81,7 +77,7 @@ function GetEthPrice()
 // Download the current volume of trades
 function GetEthVolume()
 {
-	jQuery.get('https://min-api.cryptocompare.com/data/histominute?fsym=ETH&tsym=USD&limit=1&e=CCCAGG',
+	jQuery.get('https://min-api.cryptocompare.com/data/histominute?fsym=ETH&tsym=USD&limit=10&e=CCCAGG',
 		null,
 		function(data) { GetEthVolumeReturn(data); },
 		null);
@@ -106,12 +102,15 @@ setInterval(GetEthVolume, interval);
 <div class='volume'>
 	<h2>Volumes</h2>
 	<div class='volumeSub' id = "volumeMinute">
-		<h3>Minute</h3>
+		<h3>5 Minutes</h3>
 		<!-- Current volume -->
-		<div class='volLSide'>Current volume:&nbsp</div><div class='volRSide' id='currVol'>No data</div>
+		<div class='volLSide'>0-5 minute volume:&nbsp</div><div class='volRSide' id='currVol'>No data</div>
 		<!-- Last volume -->
 		<br>
-		<div class='volLSide'>Last volume:&nbsp</div><div class='volRSide' id='lastVol'>No data</div>
+		<div class='volLSide'>6-10 minute volume:&nbsp</div><div class='volRSide' id='lastVol'>No data</div>
+		<!-- Percent change -->
+		<br>
+		<div class='volLSide'>Percent change:&nbsp</div><div class='volRSide' id='percChange'>No data</div>
 	</div>
 </div>
 
