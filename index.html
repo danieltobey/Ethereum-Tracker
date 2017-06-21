@@ -7,9 +7,7 @@
 </head>
 
 <script>
-
-console.log('Hello world!');
-
+// Display the current price and time it was received
 function GetEthPriceReturn(data)
 {
 	// Show ethereum price
@@ -35,6 +33,7 @@ function GetEthPriceReturn(data)
 	$('#lastUpdated').text(time);
 }
 
+// Download the current price
 function GetEthPrice()
 {
 	jQuery.get('https://min-api.cryptocompare.com/data/price?fsym=ETH&tsyms=USD',
@@ -43,13 +42,17 @@ function GetEthPrice()
 		null);
 }
 
+// Call once to initialize data...
 GetEthPrice();
-setInterval(GetEthPrice, 10000);
+// ... then call once every 30 seconds
+setInterval(GetEthPrice, 30000);
 </script>
 
 <body>
 
+<!-- Last updated -->
 <div id='lastUpdated'>Last updated: never</div>
+<!-- Current price  -->
 <div id='ethPrice'>No data</div>
 
 </body>
