@@ -1,8 +1,8 @@
 body {
 	background-color: black;
-	font-family: sans-serif;
-	color: white;
+	font-family: 'Roboto', sans-serif !important;
 	/*text-align: center;*/
+	background-color: #eaece5 !important;
 }
 
 #ethPrice {
@@ -11,38 +11,16 @@ body {
 
 #lastUpdated {
 	font-size: 2em;
-	margin-bottom: 1em;
 }
 
-.volume {
-	font-size: 3em;
-	margin: auto;
-	margin-left: 0;
-}
-.volume * {
-	display: inline-block;
-	margin: auto;
-}
-.volume .volumeSub {
-	width: 100%;
-	margin: 0px;
-}
-.volume h2 {
-	width: 100%;
-}
-.volume h3 {
-	width: 100%;
-	margin-top: 0.5em;
-}
-.volLSide {
-	width: 50%;
+.left {
 	text-align: right;
+	font-size: 5em;
 }
-.volRSide {
-	width: 50%;
+.right {
 	text-align: left;
 	font-family: monospace;
-	font-size: 1.5em;
+	font-size: 5em;
 }
 
 .volumeBigChange {

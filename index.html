@@ -1,9 +1,15 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 
 <head>
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-<link rel="stylesheet" href="main.css">
+	<!-- JQuery -->
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+	<!-- My CSS -->
+	<link rel="stylesheet" href="main.css">
+	<!-- Bootstrap -->
+	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+	<!-- Roboto font -->
+	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
 </head>
 
 <script>
@@ -52,10 +58,8 @@ function GetEthVolumeReturn(data)
 	for (var i = 5; i < 10; i++)
 		lastVol += data.Data[i].volumefrom;
 
-	currVol = currVol.toFixed(0);
-	lastVol = lastVol.toFixed(0);
-	$('#currVol').text(currVol);
-	$('#lastVol').text(lastVol);
+	$('#currVol').text(currVol.toFixed(0));
+	$('#lastVol').text(lastVol.toFixed(0));
 
 	var percChange = ((currVol - lastVol) / lastVol) * 100;
 	$('#percChange').text(percChange.toFixed(0) + '%');
@@ -65,6 +69,8 @@ function GetEthVolumeReturn(data)
 	{
 		$("#volumeMinute").addClass('volumeBigChange');
 		numbing++;
+		//var snd = new Audio("horn.wav");
+		//snd.play();
 	}
 	else
 	{
@@ -73,6 +79,14 @@ function GetEthVolumeReturn(data)
 			numbing--;
 	}
 }
+
+// Display the current price and time it was received
+function GetEthAvgReturn(data)
+{
+	$("#24hrHigh").text('$' + data.RAW.HIGH24HOUR.toFixed(0));
+	$("#24hrLow").text('$' + data.RAW.LOW24HOUR.toFixed(0));
+}
+
 
 // Download the current price
 function GetEthPrice()
@@ -92,37 +106,71 @@ function GetEthVolume()
 		null);
 }
 
+// Gets average data
+function GetEthAvg()
+{
+	jQuery.get('https://min-api.cryptocompare.com/data/generateAvg?fsym=ETH&tsym=USD&markets=Poloniex,Kraken,Coinbase',
+		null,
+		function(data) { GetEthAvgReturn(data); },
+		null);
+}
+
 // Call once to initialize data...
 GetEthPrice();
-GetEthVolume();
+//GetEthVolume();
+GetEthAvg();
 // ... then call once every few seconds
-setInterval(GetEthPrice, 30000);
-setInterval(GetEthVolume, 60000);
+setInterval(GetEthPrice, 60000);
+//setInterval(GetEthVolume, 60000);
 </script>
 
 <body>
+<div class='container'>
+	<div class='row'>
+		<!-- Current price -->
+		<div id='ethPrice' class='col-md-12'>No data</div>
+	</div>
+	<div class='row'>
+		<!-- Last updated -->
+		<div id='lastUpdated' class='col-md-12'>Last updated: never</div>
+	</div>
 
-<!-- Current price -->
-<div id='ethPrice'>No data</div>
-<!-- Last updated -->
-<div id='lastUpdated'>Last updated: never</div>
+	<!--<div class='volume'>
+		<div class='volumeSub' id = "volumeMinute">-->
 
-<div class='volume'>
-	<div class='volumeSub' id = "volumeMinute">
-		<!-- Current volume -->
-		<div class='volLSide'>0-5 minute volume:&nbsp</div><div class='volRSide' id='currVol'>No data</div>
-		<!-- Last volume -->
-		<br>
-		<div class='volLSide'>6-10 minute volume:&nbsp</div><div class='volRSide' id='lastVol'>No data</div>
-		<!-- Percent change -->
-		<br>
-		<div class='volLSide'>Percent change:&nbsp</div><div class='volRSide' id='percChange'>No data</div>
+<!--
+	<div class='row'>
+		<!-- Current volume --
+		<div class='col-xs-6 left'>0-5 minute volume:</div>
+		<div class='col-xs-6 right' id='currVol'>No data</div>
+	</div>
+	<div class='row'>
+		<!-- Last volume --
+		<div class='col-xs-6 left'>6-10 minute volume:</div>
+		<div class='col-xs-6 right' id='lastVol'>No data</div>
+	</div>
+	<div class='row'>
+		<!-- Percent change --
+		<div class='col-xs-6 left'>Volume change:</div>
+		<div class='col-xs-6 right' id='percChange'>No data</div>
+	</div>
+-->
+		<!--</div>
+	</div>-->
+
+	<div class='row'>
+		<div class='col-xs-6 left'></div>
+		<div class='col-xs-6 right'></div>
+	</div>
+	<div class='row'>
+		<div class='col-xs-6 left'>24-hr high:</div>
+		<div class='col-xs-6 right' id='24hrHigh'>No data</div>
+	</div>	
+	<div class='row'>
+		<div class='col-xs-6 left'>24-hr low:</div>
+		<div class='col-xs-6 right' id='24hrLow'>No data</div>
 	</div>
 </div>
-
-<script>
-</script>
-
 </body>
 
 </html>
