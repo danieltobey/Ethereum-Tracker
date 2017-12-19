@@ -14,6 +14,7 @@
 	<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 	<!-- Roboto font -->
 	<link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
+	<meta charset="utf-8"/>
 </head>
 
 <script>
@@ -44,7 +45,7 @@
 		// Show ethereum price
 		$('#ethPrice').text('$'+data.USD.toFixed(2));
 
-		$('#lastUpdated').text('Last updated: ' + CurrentTime());
+		//$('#lastUpdated').text('Last updated: ' + CurrentTime());
 	}
 
 	// If the market is fluctuating wildly, start getting "numb" to fluctuations.
@@ -96,7 +97,38 @@
 		$("#24hrLow").text('$' + data.RAW.ETH.USD.LOW24HOUR.toFixed(0));
 	}
 
+	// Display the current price and time it was received
+	function GetWeatherReturn(data)
+	{
+		var weather;
+		var day;
 
+		// Handle weekend
+		var currentDate = new Date();
+		if (currentDate.getDay() == 5) // is it Friday?
+		{
+			weather = "Monday:<br>";
+			day = data.forecast.simpleforecast.forecastday[6];
+		}
+		else
+		{
+			weather = "Tomorrow:<br>";
+			day = data.forecast.simpleforecast.forecastday[2];
+		}
+
+		weather +=
+		 day.high.fahrenheit + "° / " + day.low.fahrenheit + "°<br>" +
+		 "<img src='" + day.icon_url + "' />";
+
+		$("#weather").html(weather);
+
+		if (day.conditions.toLowerCase().search("snow") != -1)
+			$("#weather").css('background-color', 'red');
+		else
+			$("#weather").css('background-color', '');
+	}
+
+	///////////////////////////////////////////////////////////////////////////
 	// Download the current price
 	function GetEthPrice()
 	{
@@ -105,7 +137,6 @@
 			function(data) { GetEthPriceReturn(data); },
 			null);
 	}
-
 	// Download the current volume of trades
 	function GetEthVolume()
 	{
@@ -114,7 +145,6 @@
 			function(data) { GetEthVolumeReturn(data); },
 			null);
 	}
-
 	// Gets average data
 	function GetEthAvg()
 	{
@@ -123,7 +153,6 @@
 			function(data) { GetEthAvgReturn(data); },
 			null);
 	}
-
 	function GetEthHighLow()
 	{
 		jQuery.get('https://min-api.cryptocompare.com/data/pricemultifull?fsyms=ETH&tsyms=USD',
@@ -131,18 +160,28 @@
 			function(data) { GetEthHighLowReturn(data); },
 			null);
 	}
-
+	// Wunderground API key: xxxx
+	// URL: http://api.wunderground.com/api/xxxx/forecast/q/xx/xxxxx.json
+	function GetWeather()
+	{
+		jQuery.get('http://api.wunderground.com/api/xxxx/forecast/q/xx/xxxxx.json',
+			null,
+			function(data) { GetWeatherReturn(data); },
+			null);
+	}
 
 	// Call once to initialize data...
 	GetEthPrice();
 	//GetEthVolume();
 	//GetEthAvg();
 	GetEthHighLow();
+	GetWeather();
 	// ... then call once every few seconds
 	setInterval(GetEthPrice, 60000);
 	//setInterval(GetEthVolume, 60000);
 	//setInterval(GetEthAvg, 3600000);
-	setInterval(GetEthHighLow, 3600000);
+	setInterval(GetEthHighLow, 60000);
+	setInterval(GetWeather, 3600000);
 </script>
 
 <body>
@@ -151,46 +190,21 @@
 		<!-- Current price -->
 		<div id='ethPrice' class='col-md-12'>No data</div>
 	</div>
+
+	<!-- High/Low -->
 	<div class='row'>
-		<!-- Last updated -->
-		<div id='lastUpdated' class='col-md-12'>Last updated: never</div>
+		<div class='col-md-4 left'>
+			<div class='row'>24-hr high:</div>
+			<div class='row'>24-hr low:</div>
+		</div>	
+		<div class='col-md-2 right'>
+			<div class='row' id='24hrHigh'>No data</div>
+			<div class='row' id='24hrLow'>No data</div>
+		</div>
+		<!-- Weather updates -->
+		<div class='col-md-6 weather' id='weather'></div>
 	</div>
 
-	<!--<div class='volume'>
-		<div class='volumeSub' id = "volumeMinute">-->
-
-<!--
-	<div class='row'>
-		<!-- Current volume --
-		<div class='col-xs-6 left'>0-5 minute volume:</div>
-		<div class='col-xs-6 right' id='currVol'>No data</div>
-	</div>
-	<div class='row'>
-		<!-- Last volume --
-		<div class='col-xs-6 left'>6-10 minute volume:</div>
-		<div class='col-xs-6 right' id='lastVol'>No data</div>
-	</div>
-	<div class='row'>
-		<!-- Percent change --
-		<div class='col-xs-6 left'>Volume change:</div>
-		<div class='col-xs-6 right' id='percChange'>No data</div>
-	</div>
--->
-		<!--</div>
-	</div>-->
-
-	<div class='row'>
-		<div class='col-xs-6 left'></div>
-		<div class='col-xs-6 right'></div>
-	</div>
-	<div class='row'>
-		<div class='col-xs-6 left'>24-hr high:</div>
-		<div class='col-xs-6 right' id='24hrHigh'>No data</div>
-	</div>	
-	<div class='row'>
-		<div class='col-xs-6 left'>24-hr low:</div>
-		<div class='col-xs-6 right' id='24hrLow'>No data</div>
-	</div>
 </div>
 </body>
 

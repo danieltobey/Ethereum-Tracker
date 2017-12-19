@@ -14,7 +14,7 @@ body {
 }
 
 .left {
-	text-align: right;
+	/*text-align: right;*/
 	font-size: 5em;
 }
 .right {
@@ -25,4 +25,8 @@ body {
 
 .volumeBigChange {
 	background-color: red;
+}
+
+.weather {
+	font-size: 3em;
 }
