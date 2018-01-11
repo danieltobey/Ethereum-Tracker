@@ -43,7 +43,7 @@
 	function GetEthPriceReturn(data)
 	{
 		// Show ethereum price
-		$('#ethPrice').text('$'+data.USD.toFixed(2));
+		$('#ethPrice').text('$'+data.USD.toFixed(0));
 
 		//$('#lastUpdated').text('Last updated: ' + CurrentTime());
 	}
@@ -93,8 +93,7 @@
 	// Display the current price and time it was received
 	function GetEthHighLowReturn(data)
 	{
-		$("#24hrHigh").text('$' + data.RAW.ETH.USD.HIGH24HOUR.toFixed(0));
-		$("#24hrLow").text('$' + data.RAW.ETH.USD.LOW24HOUR.toFixed(0));
+		$("#24hrHighLow").text('$' + data.RAW.ETH.USD.HIGH24HOUR.toFixed(0) + ' / $' + data.RAW.ETH.USD.LOW24HOUR.toFixed(0));
 	}
 
 	// Display the current price and time it was received
@@ -107,17 +106,18 @@
 		var currentDate = new Date();
 		if (currentDate.getDay() == 5) // is it Friday?
 		{
-			weather = "Monday:<br>";
-			day = data.forecast.simpleforecast.forecastday[6];
+			weather = "Monday: ";
+			day = data.forecast.simpleforecast.forecastday[3];
 		}
 		else
 		{
-			weather = "Tomorrow:<br>";
-			day = data.forecast.simpleforecast.forecastday[2];
+			weather = "Tomorrow: ";
+			day = data.forecast.simpleforecast.forecastday[1];
 		}
+		console.log(day);
 
 		weather +=
-		 day.high.fahrenheit + "° / " + day.low.fahrenheit + "°<br>" +
+		 day.high.fahrenheit + "° / " + day.low.fahrenheit + "° " +
 		 "<img src='" + day.icon_url + "' />";
 
 		$("#weather").html(weather);
@@ -161,10 +161,9 @@
 			null);
 	}
 	// Wunderground API key: xxxx
-	// URL: http://api.wunderground.com/api/xxxx/forecast/q/xx/xxxxx.json
 	function GetWeather()
 	{
-		jQuery.get('http://api.wunderground.com/api/xxxx/forecast/q/xx/xxxxx.json',
+		jQuery.get('http://api.wunderground.com/api/bdde2007ca374173/forecast/q/US/ct/middletown.json',
 			null,
 			function(data) { GetWeatherReturn(data); },
 			null);
@@ -186,24 +185,13 @@
 
 <body>
 <div class='container'>
-	<div class='row'>
-		<!-- Current price -->
-		<div id='ethPrice' class='col-md-12'>No data</div>
-	</div>
+	<!-- Current price -->
+	<div id='ethPrice'>No data</div>
 
 	<!-- High/Low -->
-	<div class='row'>
-		<div class='col-md-4 left'>
-			<div class='row'>24-hr high:</div>
-			<div class='row'>24-hr low:</div>
-		</div>	
-		<div class='col-md-2 right'>
-			<div class='row' id='24hrHigh'>No data</div>
-			<div class='row' id='24hrLow'>No data</div>
-		</div>
-		<!-- Weather updates -->
-		<div class='col-md-6 weather' id='weather'></div>
-	</div>
+	<div class='hiLo' id='24hrHighLow'></div>
+	<!-- Weather updates -->
+	<div class='weather' id='weather'></div>
 
 </div>
 </body>

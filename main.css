@@ -3,28 +3,16 @@ body {
 	font-family: 'Roboto', sans-serif !important;
 	/*text-align: center;*/
 	background-color: #eaece5 !important;
+	text-align: center;
 }
 
 #ethPrice {
-	font-size: 20em;
+	font-size: 25em;
 }
 
-#lastUpdated {
-	font-size: 2em;
-}
-
-.left {
-	/*text-align: right;*/
-	font-size: 5em;
-}
-.right {
-	text-align: left;
+.hiLo {
 	font-family: monospace;
 	font-size: 5em;
-}
-
-.volumeBigChange {
-	background-color: red;
 }
 
 .weather {
